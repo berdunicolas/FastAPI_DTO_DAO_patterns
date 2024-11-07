@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 
 class BaseDAO():
     model = None
@@ -47,4 +48,16 @@ class BaseDAO():
 
         db.delete(entity)
         db.commit()
+
+    @classmethod
+    def filterBy(cls, key:str, value:any, db:Session):
+        column_attr = getattr(cls.model, key, None)
+        
+        if not column_attr:
+            raise AttributeError(f"'{cls.model.__name__}' no tiene el atributo '{key}'")
+
+        query = select(cls.model).where(column_attr == value)
+        result = db.execute(query)
+        
+        return result.scalars().all()
 
