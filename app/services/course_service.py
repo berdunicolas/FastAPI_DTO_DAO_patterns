@@ -26,7 +26,7 @@ class CourseService():
         course = CourseDAO.get_by_id(id, db=db)
         if course is None:
             raise HTTPException(status_code=404, detail="Course not found")
-        return 
+        return CourseDTO.model_validate(course)
     
     def update_course(db:Session, id:int, course_payload:UpdateCourseDTO) -> CourseDTO | HTTPException:
         data=course_payload.model_dump()
